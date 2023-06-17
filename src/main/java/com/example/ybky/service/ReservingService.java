@@ -50,5 +50,4 @@ public class ReservingService {
         return StringToDateConverter.convertArrayOfStringsToArrayOfDates(
                 reservingRepository.findAllEndsOfThisRoom(id));
     }
-
 }
