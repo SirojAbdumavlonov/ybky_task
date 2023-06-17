@@ -59,6 +59,7 @@ public class RoomController {
                 allEndDatesOfRoom.get(i).before(reserving.getEndLikeDate())
                 )
             )
+
                 throw new RoomHasAlreadyBeenReservedException();
         }
         reservingService.saveRoomWithResident(reserving.getStart(),

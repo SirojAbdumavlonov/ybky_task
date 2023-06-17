@@ -24,4 +24,5 @@ public class Room {
             cascade = CascadeType.ALL
     )
     private Reserving reserving;
+
 }

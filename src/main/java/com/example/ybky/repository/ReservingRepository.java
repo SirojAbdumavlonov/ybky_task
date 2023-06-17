@@ -9,7 +9,6 @@ import java.util.List;
 
 @Repository
 public interface ReservingRepository extends JpaRepository<Reserving, Integer> {
-
     @Query(
            "SELECT t.end FROM Reserving t WHERE t.room.id = ?1"
     )

@@ -18,7 +18,4 @@ public class Resident {
     private int residentId;
     private String name;
 
-
-
-
 }

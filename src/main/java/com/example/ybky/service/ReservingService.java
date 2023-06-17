@@ -51,5 +51,4 @@ public class ReservingService {
                 reservingRepository.findAllEndsOfThisRoom(id));
     }
 
-
 }
