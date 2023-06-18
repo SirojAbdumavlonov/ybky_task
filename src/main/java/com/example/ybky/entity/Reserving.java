@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class Reserving {
-
     @OneToOne(
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
