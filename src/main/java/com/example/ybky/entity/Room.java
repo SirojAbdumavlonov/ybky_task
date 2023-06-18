@@ -20,9 +20,6 @@ public class Room {
     private String name;
     private String type;
     private int capacity;
-    @OneToOne(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
-    )
-    private Reserving reserving;
+
 
 }

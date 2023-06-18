@@ -4,6 +4,7 @@ import com.example.ybky.entity.Reserving;
 import com.example.ybky.entity.Resident;
 import com.example.ybky.entity.Room;
 import com.example.ybky.repository.ReservingRepository;
+import com.example.ybky.repository.RoomRepository;
 import com.example.ybky.tools.StringToDateConverter;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,29 +12,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ReservingService {
 
     @Autowired
-    private static ReservingRepository reservingRepository;
+    private ReservingRepository reservingRepository;
+
+    @Autowired
+    private RoomRepository roomRepository;
 
 
-    @Transactional
+
     public void saveRoomWithResident(String start, String end, String residentName, int roomId){
         Resident resident =
                 Resident.builder()
                         .name(residentName)
                         .build();
-        Room room =
-                Room.builder()
-                        .id(roomId)
-                        .build();
-        Reserving reserving =
+        Room room = roomRepository.findById(roomId);
+
+                Reserving reserving =
                     Reserving.builder()
                             .resident(resident)
                             .start(start)
@@ -50,4 +49,6 @@ public class ReservingService {
         return StringToDateConverter.convertArrayOfStringsToArrayOfDates(
                 reservingRepository.findAllEndsOfThisRoom(id));
     }
+
+
 }

@@ -13,6 +13,8 @@ public interface ReservingRepository extends JpaRepository<Reserving, Integer> {
            "SELECT t.end FROM Reserving t WHERE t.room.id = ?1"
     )
     List<String> findAllEndsOfThisRoom(int id);
+
+
     @Query(
             "SELECT t.start FROM Reserving t WHERE t.room.id = ?1"
     )

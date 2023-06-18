@@ -14,7 +14,15 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Resident {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "resident_sequence",
+            sequenceName = "resident_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "resident_sequence"
+    )
     private int residentId;
     private String name;
 
