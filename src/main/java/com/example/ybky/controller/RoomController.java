@@ -137,13 +137,8 @@ public class RoomController {
         }
         return ResponseEntity.ok(availableTime);
     }
-
-
-
-    @PostMapping("/addRoom")
-    public Room addRoom(@RequestBody Room room){
-        return roomRepository.save(room);
-    }
-
-
+//    @PostMapping("/addRoom")
+//    public Room addRoom(@RequestBody Room room){
+//        return roomRepository.save(room);
+//    }
 }
