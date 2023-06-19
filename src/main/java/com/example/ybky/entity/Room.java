@@ -13,9 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Room {
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.IDENTITY
-    )
+    @GeneratedValue
     private int id;
     private String name;
     private String type;

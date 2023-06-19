@@ -4,17 +4,21 @@ import com.example.ybky.entity.Reserving;
 import com.example.ybky.entity.Room;
 import com.example.ybky.exceptions.NoSuchRoomWithThisIdException;
 import com.example.ybky.exceptions.RoomHasAlreadyBeenReservedException;
+import com.example.ybky.payload.AllRoomsResponse;
 import com.example.ybky.payload.ApiResponse;
+import com.example.ybky.payload.AvailableTimesResponse;
 import com.example.ybky.repository.RoomRepository;
 import com.example.ybky.service.ReservingService;
 import com.example.ybky.service.RoomService;
-import com.example.ybky.tools.StringToDateConverter;
+import com.example.ybky.tools.Converter;
+import com.example.ybky.utils.DateOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 
@@ -32,11 +36,33 @@ public class RoomController {
     @Autowired
     private RoomRepository roomRepository;
 
+    List<AvailableTimesResponse> availableTime;
+
 
 
     public RoomController(ReservingService reservingService, RoomService roomService) {
         this.reservingService = reservingService;
         this.roomService = roomService;
+    }
+
+    @GetMapping()
+    public ResponseEntity<AllRoomsResponse> getAllDataOfRooms(@RequestParam(name = "search", required = false) String roomName,
+                                               @RequestParam(name = "type", required = false) String roomType,
+                                               @RequestParam(name = "page", required = false, defaultValue = "1") int page,
+                                               @RequestParam(name = "page_size", required = false, defaultValue = "10") int page_size
+                                                ){
+        System.out.println(roomName);
+        System.out.println(roomType);
+        System.out.println(page);
+        System.out.println(page_size);
+        List<Room> rooms =
+                roomService.findAllRoomsByParams(
+                        roomName, roomType, page, page_size
+                );
+
+        return ResponseEntity.ok(new AllRoomsResponse(
+                page, rooms.size(), page_size, rooms
+        ));
     }
 
     @PostMapping("/{id}/book")
@@ -62,17 +88,17 @@ public class RoomController {
 
         for(int i = 0; i < allEndDatesOfRoom.size(); i++){
             if(
-                ((StringToDateConverter.convertStringToDate(reserving.getStart()).after(allStartDatesOfRoom.get(i))
+                (Converter.convertStringToDate(reserving.getStart()).after(allStartDatesOfRoom.get(i))
                         &&
-                (StringToDateConverter.convertStringToDate(reserving.getStart()).before(allEndDatesOfRoom.get(i))))
+                (Converter.convertStringToDate(reserving.getStart())).before(allEndDatesOfRoom.get(i)))
                         ||
-                (StringToDateConverter.convertStringToDate(reserving.getEnd()).after(allStartDatesOfRoom.get(i))
+                (Converter.convertStringToDate(reserving.getEnd())).after(allStartDatesOfRoom.get(i))
                         &&
-                (StringToDateConverter.convertStringToDate(reserving.getEnd()).before(allEndDatesOfRoom.get(i))))
+                (Converter.convertStringToDate(reserving.getEnd())).before(allEndDatesOfRoom.get(i))
                         ||
-                (allStartDatesOfRoom.get(i).after(StringToDateConverter.convertStringToDate(reserving.getStart()))
+                (allStartDatesOfRoom.get(i).after(Converter.convertStringToDate(reserving.getStart())))
                         &&
-                (allEndDatesOfRoom.get(i).before(StringToDateConverter.convertStringToDate(reserving.getEnd())))))
+                (allEndDatesOfRoom.get(i).before(Converter.convertStringToDate(reserving.getEnd())))
             )
                 throw new RoomHasAlreadyBeenReservedException("uzr, siz tanlagan vaqtda xona band");
         }
@@ -87,6 +113,33 @@ public class RoomController {
             new NoSuchRoomWithThisIdException("topilmadi")
         );
     }
+    @GetMapping("/{id}/availability")
+    public ResponseEntity<List<AvailableTimesResponse>> showAvailableTimeOfRoom(@PathVariable int id,
+                                                                @RequestParam(name = "date",required = false) String date){
+        if(date == null){
+            date = DateOptions.getCurrentDate();
+        }
+        roomService.findRoomById(id).orElseThrow(() ->
+                new NoSuchRoomWithThisIdException("bunday son bilan hona yoq!")
+        );
+
+        List<String> allStartsOfRoom = reservingService.allStartsByIdAndDate(id, date);
+        List<String> allEndsOfRoom = reservingService.allEndsByIdAndDate(id, date);
+
+        availableTime = new ArrayList<>(allStartsOfRoom.size());
+
+        allStartsOfRoom.add(DateOptions.getDatePlus2359(date));
+        allEndsOfRoom.add(0, DateOptions.getDatePlus0000(date));
+
+        for (int i = 0; i < allEndsOfRoom.size(); i++){
+            availableTime.add(i, new AvailableTimesResponse(allEndsOfRoom.get(i),
+                    allStartsOfRoom.get(i)));
+        }
+        return ResponseEntity.ok(availableTime);
+    }
+
+
+
     @PostMapping("/addRoom")
     public Room addRoom(@RequestBody Room room){
         return roomRepository.save(room);

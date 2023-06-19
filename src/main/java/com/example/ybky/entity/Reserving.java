@@ -12,13 +12,15 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class Reserving {
-    @OneToOne(
+    @ManyToOne(
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
     @JoinColumn(
             name = "room_id"
+
     )
+
     private Room room;
 
     @OneToOne(

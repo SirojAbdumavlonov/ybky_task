@@ -5,11 +5,10 @@ import com.example.ybky.entity.Resident;
 import com.example.ybky.entity.Room;
 import com.example.ybky.repository.ReservingRepository;
 import com.example.ybky.repository.RoomRepository;
-import com.example.ybky.tools.StringToDateConverter;
+import com.example.ybky.tools.Converter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -42,13 +41,25 @@ public class ReservingService {
         reservingRepository.save(reserving);
     }
     public List<Date> findAllStartDatesOfRoom(int id){
-        return StringToDateConverter.convertArrayOfStringsToArrayOfDates(
+        return Converter.convertArrayOfStringsToArrayOfDates(
                 reservingRepository.findAllStartsOfThisRoom(id));
     }
     public List<Date> findAllEndDatesOfRoom(int id){
-        return StringToDateConverter.convertArrayOfStringsToArrayOfDates(
+        return Converter.convertArrayOfStringsToArrayOfDates(
                 reservingRepository.findAllEndsOfThisRoom(id));
     }
+
+    public List<String> allStartsByIdAndDate(int roomId, String date){
+        return reservingRepository.findAllStartsByIdAndDate(roomId, date);
+
+    }
+    public List<String> allEndsByIdAndDate(int roomId, String date){
+        return reservingRepository.findAllEndsByIdAndDate(roomId, date);
+
+    }
+
+
+
 
 
 }
