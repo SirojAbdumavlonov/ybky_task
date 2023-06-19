@@ -31,10 +31,14 @@
 
        POST /api/rooms/{id}/book
 
+   Instructions of date("dd-MM-yyyy HH:mm:ss"),
+
+      example: "06-07-2021 06:35:12"
+
         {
           "resident": {
             "name": "Anvar Sanayev"
           },
-          "start": "05-06-2023 9:00:00",
+          "start": "05-06-2023 09:00:00",
           "end": "05-06-2023 10:00:00"
         }
