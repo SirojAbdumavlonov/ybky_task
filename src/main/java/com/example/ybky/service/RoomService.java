@@ -27,7 +27,7 @@ public class RoomService {
         List<Room> rooms;
 
         Pageable recordsOnPage =
-                PageRequest.of(page-1, page_size);
+                PageRequest.of(page-1, page_size);//'page - 1' because page starts with 0 index
 
         if(name != null && type != null){
             rooms = roomRepository.findAllByTypeAndName(type, name, recordsOnPage);

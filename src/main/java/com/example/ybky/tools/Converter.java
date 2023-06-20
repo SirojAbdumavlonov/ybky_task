@@ -27,17 +27,4 @@ public class Converter {
         }
         return datess;
     }
-
-    public static String convertDateToString(Date date){
-        return fullDateFormat.format(date);
-    }
-    public static List<String> convertArrayOfDatesToArrayOfStrings(List<Date> dates){
-        List<String> strings = new ArrayList<>();
-        for (Date date : dates) {
-            strings.add(fullDateFormat.format(date));
-        }
-        return strings;
-    }
-
-
 }

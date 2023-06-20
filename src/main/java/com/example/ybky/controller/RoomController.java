@@ -7,7 +7,6 @@ import com.example.ybky.exceptions.RoomHasAlreadyBeenReservedException;
 import com.example.ybky.payload.AllRoomsResponse;
 import com.example.ybky.payload.ApiResponse;
 import com.example.ybky.payload.AvailableTimesResponse;
-import com.example.ybky.repository.RoomRepository;
 import com.example.ybky.service.ReservingService;
 import com.example.ybky.service.RoomService;
 import com.example.ybky.tools.Converter;
@@ -26,19 +25,13 @@ import java.util.Date;
 @RequestMapping(value = "/api/rooms")
 public class RoomController {
 
-
     @Autowired
     private final ReservingService reservingService;
 
     @Autowired
     private final RoomService roomService;
 
-    @Autowired
-    private RoomRepository roomRepository;
-
     List<AvailableTimesResponse> availableTime;
-
-
 
     public RoomController(ReservingService reservingService, RoomService roomService) {
         this.reservingService = reservingService;
@@ -51,15 +44,10 @@ public class RoomController {
                                                @RequestParam(name = "page", required = false, defaultValue = "1") int page,
                                                @RequestParam(name = "page_size", required = false, defaultValue = "10") int page_size
                                                 ){
-        System.out.println(roomName);
-        System.out.println(roomType);
-        System.out.println(page);
-        System.out.println(page_size);
         List<Room> rooms =
                 roomService.findAllRoomsByParams(
                         roomName, roomType, page, page_size
                 );
-
         return ResponseEntity.ok(new AllRoomsResponse(
                 page, rooms.size(), page_size, rooms
         ));
@@ -88,16 +76,16 @@ public class RoomController {
 
         for(int i = 0; i < allEndDatesOfRoom.size(); i++){
             if(
-                (Converter.convertStringToDate(reserving.getStart()).after(allStartDatesOfRoom.get(i))
+                (Converter.convertStringToDate(reserving.getStart()).after(allStartDatesOfRoom.get(i))//checking start Date if it is after start
                         &&
-                (Converter.convertStringToDate(reserving.getStart())).before(allEndDatesOfRoom.get(i)))
-                        ||
-                (Converter.convertStringToDate(reserving.getEnd())).after(allStartDatesOfRoom.get(i))
+                (Converter.convertStringToDate(reserving.getStart())).before(allEndDatesOfRoom.get(i)))//checking start Date if it is before end
+                        ||//checking start if it is between of one booking time(start and end)
+                (Converter.convertStringToDate(reserving.getEnd())).after(allStartDatesOfRoom.get(i))//checking end Date if it is after start
                         &&
-                (Converter.convertStringToDate(reserving.getEnd())).before(allEndDatesOfRoom.get(i))
-                        ||
+                (Converter.convertStringToDate(reserving.getEnd())).before(allEndDatesOfRoom.get(i))//checking end Date if it is before end
+                        ||//checking end if it is between of one booking time(start and end)
                 (allStartDatesOfRoom.get(i).after(Converter.convertStringToDate(reserving.getStart())))
-                        &&
+                        &&//checking if start and end inside of new booking time(start and end)
                 (allEndDatesOfRoom.get(i).before(Converter.convertStringToDate(reserving.getEnd())))
             )
                 throw new RoomHasAlreadyBeenReservedException("uzr, siz tanlagan vaqtda xona band");
@@ -128,8 +116,8 @@ public class RoomController {
 
         availableTime = new ArrayList<>(allStartsOfRoom.size());
 
-        allStartsOfRoom.add(DateOptions.getDatePlus2359(date));
-        allEndsOfRoom.add(0, DateOptions.getDatePlus0000(date));
+        allStartsOfRoom.add(DateOptions.getDatePlus2359(date));//adding current date + 23:59:59 to List
+        allEndsOfRoom.add(0, DateOptions.getDatePlus0000(date));//adding current date + 00:00:00 to List
 
         for (int i = 0; i < allEndsOfRoom.size(); i++){
             availableTime.add(i, new AvailableTimesResponse(allEndsOfRoom.get(i),
@@ -137,8 +125,4 @@ public class RoomController {
         }
         return ResponseEntity.ok(availableTime);
     }
-//    @PostMapping("/addRoom")
-//    public Room addRoom(@RequestBody Room room){
-//        return roomRepository.save(room);
-//    }
 }

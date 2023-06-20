@@ -22,8 +22,6 @@ public class ReservingService {
     @Autowired
     private RoomRepository roomRepository;
 
-
-
     public void saveRoomWithResident(String start, String end, String residentName, int roomId){
         Resident resident =
                 Resident.builder()
@@ -48,7 +46,6 @@ public class ReservingService {
         return Converter.convertArrayOfStringsToArrayOfDates(
                 reservingRepository.findAllEndsOfThisRoom(id));
     }
-
     public List<String> allStartsByIdAndDate(int roomId, String date){
         return reservingRepository.findAllStartsByIdAndDate(roomId, date);
 
@@ -57,9 +54,4 @@ public class ReservingService {
         return reservingRepository.findAllEndsByIdAndDate(roomId, date);
 
     }
-
-
-
-
-
 }
