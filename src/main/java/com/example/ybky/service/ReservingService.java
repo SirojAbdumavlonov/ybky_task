@@ -7,6 +7,7 @@ import com.example.ybky.repository.ReservingRepository;
 import com.example.ybky.repository.RoomRepository;
 import com.example.ybky.tools.Converter;
 
+import com.example.ybky.tools.Sorter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,11 +48,16 @@ public class ReservingService {
                 reservingRepository.findAllEndsOfThisRoom(id));
     }
     public List<String> allStartsByIdAndDate(int roomId, String date){
-        return reservingRepository.findAllStartsByIdAndDate(roomId, date);
+        return sortStringOfDates(reservingRepository.
+                findAllStartsByIdAndDate(roomId, date));
 
     }
+    private List<String> sortStringOfDates(List<String> dates){
+        return Sorter.sortingArrayOfDates(Converter.convertArrayOfStringsToArrayOfDates(dates));
+    }
     public List<String> allEndsByIdAndDate(int roomId, String date){
-        return reservingRepository.findAllEndsByIdAndDate(roomId, date);
+        return sortStringOfDates(reservingRepository.
+                findAllEndsByIdAndDate(roomId, date));
 
     }
 }

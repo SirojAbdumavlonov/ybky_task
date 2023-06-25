@@ -21,11 +21,11 @@ public interface ReservingRepository extends JpaRepository<Reserving, Integer> {
     List<String> findAllStartsOfThisRoom(int id);
 
     @Query(
-            "SELECT t.start FROM Reserving t WHERE t.room.id = ?1 AND t.start LIKE ?2% ORDER BY t.start ASC"
+            "SELECT t.start FROM Reserving t WHERE t.room.id = ?1 AND t.start LIKE ?2%"
     )
     List<String> findAllStartsByIdAndDate(int roomId, String date);
     @Query(
-            "SELECT t.end FROM Reserving t WHERE t.room.id = ?1 AND t.end LIKE ?2% ORDER BY t.end ASC"
+            "SELECT t.end FROM Reserving t WHERE t.room.id = ?1 AND t.end LIKE ?2% "
     )
     List<String> findAllEndsByIdAndDate(int roomId, String date);
 

@@ -76,6 +76,10 @@ public class RoomController {
 
         for(int i = 0; i < allEndDatesOfRoom.size(); i++){
             if(
+                ((Converter.convertStringToDate(reserving.getStart()) == allStartDatesOfRoom.get(i))
+                            &&
+                (Converter.convertStringToDate(reserving.getEnd()) == allEndDatesOfRoom.get(i)))
+                        ||
                 (Converter.convertStringToDate(reserving.getStart()).after(allStartDatesOfRoom.get(i))//checking start Date if it is after start
                         &&
                 (Converter.convertStringToDate(reserving.getStart())).before(allEndDatesOfRoom.get(i)))//checking start Date if it is before end

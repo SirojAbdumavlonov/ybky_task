@@ -17,6 +17,14 @@ public class Converter {
             throw new RuntimeException(e);
         }
     }
+    public static List<String> convertDatesToStrings(List<Date> dates) {
+        List<String> strings = new ArrayList<>();
+        for (Date date : dates) {
+            String string = fullDateFormat.format(date);
+            strings.add(string);
+        }
+        return strings;
+    }
     public static List<Date> convertArrayOfStringsToArrayOfDates(List<String> dates){
         List<Date> datess = new ArrayList<>();
         for(String date:dates){
